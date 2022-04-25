@@ -1,6 +1,8 @@
 import React from "react";
-import MainScreen from "./screens/MainScreen";
+import Main from "./screens/Main";
+import Login from "./screens/Login";
+import Example from "./screens/Example";
 
 export default function App() {
-	return <MainScreen />;
+	return <Login />;
 }
