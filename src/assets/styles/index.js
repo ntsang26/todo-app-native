@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-const COLOR = {
+export const COLOR = {
   mainColor: "#6c5ce7",
   textColor: "#333",
 };

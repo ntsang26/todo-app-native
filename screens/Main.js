@@ -1,5 +1,4 @@
-/* eslint-disable */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	View,
 	Text,
@@ -8,64 +7,45 @@ import {
 	TouchableOpacity,
 	FlatList,
 	StatusBar,
+	Alert,
 } from "react-native";
-import Header from "../components/Header";
-import TaskItem from "../components/TaskItem";
+import { useDispatch, useSelector } from "react-redux";
+import { taskActionTypes } from "../actions/actionTypes";
+import Header from "../src/components/Header";
+import TaskItem from "../src/components/TaskItem";
 import { styles } from "../src/assets/styles";
 
-const TASK_STATUS = {
-	DONE: 1,
-	NOT_DONE: 0,
-};
-
-const getRandomInt = (min, max) => {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-const MainScreen = () => {
+const Main = ({ navigation }) => {
+	const dispatch = useDispatch();
 	const [tasks, setTasks] = useState([]); // {id: 1, title: "check email", status: }
 	const [taskTitle, setTaskTitle] = useState("");
+	const taskReducers = useSelector((state) => state.taskReducers);
+	// console.log(tasks)
 
-	const addTask = () => {
-		let newTask = [
-			...tasks,
-			{
-				id: getRandomInt(0, 10000),
-				title: taskTitle,
-				status: TASK_STATUS.NOT_DONE,
-			},
-		];
-		if (taskTitle !== "") setTasks(newTask);
-		setTaskTitle("");
-	};
+	useEffect(() => {
+		dispatch({ type: taskActionTypes.GET_LIST_TASK });
+	}, [dispatch]);
 
-	const deleteTask = (taskId) => {
-		let newTask = tasks.filter((item) => item.id !== taskId);
-		setTasks(newTask);
-	};
-
-	const onCompleteTask = (taskId) => {
-		let newTask = tasks.map((item) => {
-			if (item.id === taskId) {
-				return {
-					...item,
-					status: !item.status,
-				};
-			} else {
-				return item;
+	useEffect(() => {
+		if (taskReducers.type) {
+			if (taskReducers.type === taskActionTypes.GET_LIST_TASK_SUCCESS) {
+				if (taskReducers.data) {
+					setTasks(taskReducers.data);
+				}
+			} else if (taskReducers.type === taskActionTypes.ADD_NEW_TASK_SUCCESS) {
+				dispatch({ type: taskActionTypes.GET_LIST_TASK });
+			} else if (taskReducers.type === taskActionTypes.TOGGLE_ONE_TASK_SUCCESS) {
+				dispatch({ type: taskActionTypes.GET_LIST_TASK });
 			}
-		});
-		setTasks(newTask);
-	};
+		}
+	}, [taskReducers]);
 
 	return (
 		<View style={{ flex: 1 }}>
-			<StatusBar barStyle="dark-content" />
+			<StatusBar barStyle="default" />
 			<View style={styles.parentContainer}>
 				{/* header */}
-				<Header />
+				<Header navigation={navigation} />
 
 				{/* Adding task */}
 				<View style={styles.addingTaskContainer}>
@@ -75,7 +55,20 @@ const MainScreen = () => {
 						value={taskTitle}
 						onChangeText={(title) => setTaskTitle(title)}
 					/>
-					<TouchableOpacity style={styles.addingBtn} onPress={addTask}>
+					<TouchableOpacity
+						style={styles.addingBtn}
+						onPress={() => {
+							if (taskTitle.length === 0) {
+								Alert.alert("Thông báo", "Vui lòng điền thông tin!");
+							} else {
+								dispatch({
+									type: taskActionTypes.ADD_NEW_TASK,
+									taskName: taskTitle,
+								});
+								setTaskTitle("");
+							}
+						}}
+					>
 						<Image
 							source={require("./../src/assets/img/plus.png")}
 							style={styles.addingBtnIcon}
@@ -87,7 +80,7 @@ const MainScreen = () => {
 				<View style={styles.titleBodyContainer}>
 					<Text style={styles.titleBodyText}>Today's task</Text>
 					<Text style={styles.titleBodyText}>
-						{tasks.filter((item) => item.status).length}/{tasks.length}
+						{tasks.filter((item) => item.completed).length}/{tasks.length}
 					</Text>
 				</View>
 
@@ -95,11 +88,7 @@ const MainScreen = () => {
 				<FlatList
 					data={tasks}
 					renderItem={({ item, idx }) => (
-						<TaskItem
-							task={item}
-							deleteTask={deleteTask}
-							onCompleteTask={onCompleteTask}
-						/>
+						<TaskItem key={idx} task={item} dispatch={dispatch} />
 					)}
 					keyExtractor={(item, idx) => String(idx)}
 					style={{ paddingHorizontal: 20, marginVertical: 20 }}
@@ -109,4 +98,4 @@ const MainScreen = () => {
 	);
 };
 
-export default MainScreen;
+export default Main;

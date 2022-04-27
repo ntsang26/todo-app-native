@@ -8,12 +8,13 @@ import {
 	TouchableOpacity,
 	StatusBar,
 	useWindowDimensions,
+	Alert,
 } from "react-native";
 import React from "react";
 
-export default function Login({ navigation }) {
+export default function SignUp({ navigation }) {
 	const image = {
-		uri: "https://images.unsplash.com/photo-1509822929063-6b6cfc9b42f2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+		uri: "https://images.unsplash.com/photo-1595206133361-b1fe343e5e23?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
 	};
 	const windowHeight = useWindowDimensions().height;
 
@@ -26,7 +27,7 @@ export default function Login({ navigation }) {
 				style={styles.image}
 				imageStyle={{ borderBottomRightRadius: 30, borderBottomLeftRadius: 30 }}
 			/>
-			<Text style={styles.loginText}>Login</Text>
+			<Text style={styles.loginText}>Sign Up</Text>
 			<View style={styles.loginContainer}>
 				<View style={styles.formInput}>
 					<Image
@@ -51,18 +52,33 @@ export default function Login({ navigation }) {
 						secureTextEntry={true}
 					/>
 				</View>
-				<TouchableOpacity>
-					<Text style={styles.forgotText}>Forgot Password?</Text>
-				</TouchableOpacity>
+				<View style={{ ...styles.formInput, marginTop: 20 }}>
+					<Image
+						source={require("../src/assets/img/password.png")}
+						style={styles.inputIcon}
+					/>
+					<TextInput
+						placeholder="Confirm password"
+						placeholderTextColor={"#666"}
+						style={styles.input}
+						secureTextEntry={true}
+					/>
+				</View>
 				<TouchableOpacity
 					style={styles.loginBtn}
-					onPress={() => navigation.navigate("Main")}
+					onPress={() => {
+						navigation.navigate("Login");
+						Alert.alert(
+							"Thành công!",
+							"Bạn đã đăng ký thành công. Vui lòng đăng nhập để tiếp tục!",
+						);
+					}}
 				>
-					<Text style={styles.loginBtnText}>Login</Text>
+					<Text style={styles.loginBtnText}>Sign Up</Text>
 				</TouchableOpacity>
 				<View style={styles.socialLogin}>
-					<TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-						<Text style={styles.signUpText}>Sign Up</Text>
+					<TouchableOpacity onPress={() => navigation.navigate("Login")}>
+						<Text style={styles.signUpText}>Login</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -76,7 +92,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 	},
 	image: {
-		height: 350,
+		height: 250,
 	},
 	loginText: {
 		textAlign: "center",
@@ -115,6 +131,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 15,
 		borderRadius: 30,
 		marginBottom: 10,
+		marginTop: 30,
 	},
 	loginBtnText: {
 		textAlign: "center",
