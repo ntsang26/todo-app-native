@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image, StatusBar } from "react-native";
 import React, { useEffect, useState } from "react";
-import { COLOR } from '../src/assets/styles'
+import { COLOR } from "../src/assets/styles";
 
 export default function Welcome({ navigation }) {
 	useEffect(() => {
@@ -9,7 +9,10 @@ export default function Welcome({ navigation }) {
 
 	return (
 		<View style={styles.container}>
-			<Image source={require("../src/assets/img/avatar.png")} style={styles.splashLogo} />
+			<Image
+				source={require("../src/assets/img/avatar.png")}
+				style={styles.splashLogo}
+			/>
 		</View>
 	);
 }
@@ -25,6 +28,6 @@ const styles = StyleSheet.create({
 	},
 	splashLogo: {
 		width: 150,
-		height: 150
-	}
+		height: 150,
+	},
 });
