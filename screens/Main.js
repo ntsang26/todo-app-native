@@ -9,20 +9,21 @@ import {
 	StatusBar,
 	Alert,
 	ActivityIndicator,
+	ScrollView,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { taskActionTypes } from "../actions/actionTypes";
 import Header from "../src/components/Header";
 import TaskItem from "../src/components/TaskItem";
 import { styles, COLOR } from "../src/assets/styles";
+import { FontAwesome } from "@expo/vector-icons";
 
 const Main = ({ navigation }) => {
 	const dispatch = useDispatch();
-	const [tasks, setTasks] = useState([]); // {id: 1, title: "check email", status: }
+	const [tasks, setTasks] = useState([]);
 	const [taskTitle, setTaskTitle] = useState("");
 	const [loading, setLoading] = useState(true);
 	const taskReducers = useSelector((state) => state.taskReducers);
-	// console.log(tasks)
 
 	useEffect(() => {
 		dispatch({ type: taskActionTypes.GET_LIST_TASK });
@@ -40,10 +41,12 @@ const Main = ({ navigation }) => {
 				setLoading(false);
 			} else if (taskReducers.type === taskActionTypes.ADD_NEW_TASK_SUCCESS) {
 				dispatch({ type: taskActionTypes.GET_LIST_TASK });
+				setLoading(true);
 			} else if (
 				taskReducers.type === taskActionTypes.TOGGLE_ONE_TASK_SUCCESS
 			) {
 				dispatch({ type: taskActionTypes.GET_LIST_TASK });
+				// setLoading(true);
 			}
 		}
 	}, [taskReducers]);
@@ -77,10 +80,7 @@ const Main = ({ navigation }) => {
 							}
 						}}
 					>
-						<Image
-							source={require("./../src/assets/img/plus.png")}
-							style={styles.addingBtnIcon}
-						/>
+						<FontAwesome name="plus-circle" size={30} color={COLOR.mainColor} />
 					</TouchableOpacity>
 				</View>
 
@@ -100,14 +100,11 @@ const Main = ({ navigation }) => {
 						style={{ marginTop: 30 }}
 					/>
 				) : (
-					<FlatList
-						data={tasks}
-						renderItem={({ item, idx }) => (
+					<ScrollView style={{ paddingHorizontal: 20, marginVertical: 10 }}>
+						{tasks.map((item, idx) => (
 							<TaskItem key={idx} task={item} dispatch={dispatch} />
-						)}
-						keyExtractor={(item, idx) => String(idx)}
-						style={{ paddingHorizontal: 20, marginVertical: 20 }}
-					/>
+						))}
+					</ScrollView>
 				)}
 			</View>
 		</View>

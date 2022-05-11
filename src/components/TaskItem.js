@@ -1,29 +1,61 @@
-import {
-	View,
-	Text,
-	TouchableOpacity,
-	Image,
-	// Modal,
-	// TextInput,
-} from "react-native";
-import React, { useState } from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import React, { useEffect, useState } from "react";
 import { styles, COLOR } from "../assets/styles";
 import { taskActionTypes } from "../../actions/actionTypes";
-import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler'
-import Animated, { useAnimatedGestureHandler } from 'react-native-reanimated'
+import {
+	PanGestureHandler,
+	PanGestureHandlerGestureEvent,
+} from "react-native-gesture-handler";
+import Animated, {
+	useAnimatedGestureHandler,
+	useAnimatedStyle,
+	useSharedValue,
+	withSpring,
+	withTiming,
+} from "react-native-reanimated";
+import { FontAwesome, Entypo } from "@expo/vector-icons";
 
 export default function TaskItem({ task, dispatch }) {
-	// const [modalVisibled, setModalVisibled] = useState(false);
+	const translateX = useSharedValue(0);
 
-	// const toggleModal = () => {
-	// 	setModalVisibled(true);
-	// };
+	const panGesture = useAnimatedGestureHandler({
+		onStart: (_, ctx) => {
+			ctx.startX = translateX.value;
+		},
+		onActive: (e, ctx) => {
+			const y = ctx.startX + e.translationX;
+			if (y < 0) {
+				translateX.value = y;
+			}
+		},
+		onEnd: () => {
+			if (translateX.value < -50) {
+				translateX.value = withSpring(-55);
+			} else {
+				translateX.value = withSpring(0);
+			}
+		},
+	});
 
-
+	const rStyle = useAnimatedStyle(() => ({
+		transform: [{ translateX: translateX.value }],
+	}));
 
 	return (
-		// <PanGestureHandler onGestureEvent={panGesture}>
-			<Animated.View style={styles.taskItem}>
+		<View style={styles.taskContainer}>
+			<TouchableOpacity
+				style={styles.deleteBtn}
+				onPress={() => {
+					dispatch({
+						type: taskActionTypes.DELETE_ONE_TASK,
+						taskId: task.taskId,
+					});
+				}}
+			>
+				<FontAwesome name="trash" size={24} color="red" />
+			</TouchableOpacity>
+
+			<Animated.View style={[styles.taskItem, rStyle]}>
 				<TouchableOpacity
 					onPress={() => {
 						dispatch({
@@ -34,87 +66,44 @@ export default function TaskItem({ task, dispatch }) {
 					}}
 				>
 					{task.completed ? (
-						<Image
-							source={require("../assets/img/check_circle.png")}
-							style={styles.addingBtnIcon}
-						/>
+						<FontAwesome name="check-circle" size={28} color="#2ecc71" />
 					) : (
-						<Image
-							source={require("../assets/img/uncheck_circle.png")}
-							style={styles.addingBtnIcon}
-						/>
+						<FontAwesome name="circle-thin" size={28} color="#888" />
 					)}
 				</TouchableOpacity>
-				<Text
-					style={{
-						...styles.taskName,
-						textDecorationLine: task.completed ? "line-through" : "none",
-						color: task.completed ? "#999" : COLOR.mainColor,
-					}}
-				>
-					{task.taskName}
-				</Text>
-				{/* <TouchableOpacity
-					style={styles.editBtn}
-					onPress={() => {
-						// dispatch({
-						// 	type: taskActionTypes.DELETE_ONE_TASK,
-						// 	taskId: task.taskId,
-						// });
-						toggleModal();
-					}}
-				>
-					<Image
-						source={require("../assets/img/edit.png")}
-						style={styles.editBtnIcon}
-					/>
-				</TouchableOpacity> */}
 				<TouchableOpacity
-					style={styles.deleteBtn}
 					onPress={() => {
 						dispatch({
-							type: taskActionTypes.DELETE_ONE_TASK,
+							type: taskActionTypes.TOGGLE_ONE_TASK,
 							taskId: task.taskId,
+							completed: !task.completed,
 						});
 					}}
 				>
-					<Image
-						source={require("../assets/img/remove_circle.png")}
-						style={styles.deleteBtnIcon}
-					/>
+					<Text
+						style={{
+							...styles.taskName,
+							textDecorationLine: task.completed ? "line-through" : "none",
+							color: task.completed ? "#999" : COLOR.mainColor,
+						}}
+					>
+						{task.taskName}
+					</Text>
 				</TouchableOpacity>
-				{/* Modal Edit Todo */}
-				{/* <Modal
-					visible={modalVisibled}
-					animationType="fade"
-					transparent={true}
-					onRequestClose={() => {
-						setModalVisibled(!modalVisibled);
-					}}
-				>
-					<View style={styles.modalEdit}>
-						<View style={styles.modalView}>
-							<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-								<TextInput value={task.taskName} style={styles.editTaskInput} />
-								<TouchableOpacity style={styles.doneBtn}>
-									<Text style={{fontSize: 20, color: 'white'}}>&#10003;</Text>
-								</TouchableOpacity>
-							</View>
-							<TouchableOpacity
-								onPress={() => {
-									setModalVisibled(!modalVisibled);
-								}}
-								style={styles.closeModalBtn}
-							>
-								<Image
-									source={require("../assets/img/close.png")}
-									style={styles.closeModalBtnIcon}
-								/>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</Modal> */}
+				<PanGestureHandler onGestureEvent={panGesture}>
+					<Animated.View
+						style={{
+							position: "absolute",
+							right: 10,
+							justifyContent: "center",
+							alignItems: "center",
+							width: 20
+						}}
+					>
+						<Entypo name="dots-three-vertical" size={24} color="#636e72" />
+					</Animated.View>
+				</PanGestureHandler>
 			</Animated.View>
-		// </PanGestureHandler>
+		</View>
 	);
 }

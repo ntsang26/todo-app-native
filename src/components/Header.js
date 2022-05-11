@@ -1,6 +1,7 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { styles } from "../assets/styles";
+import { Actions } from "react-native-router-flux";
 
 export default function Header({ navigation }) {
 	return (
@@ -18,7 +19,7 @@ export default function Header({ navigation }) {
 				</Text>
 				<TouchableOpacity
 					onPress={() => {
-						navigation.goBack();
+						Actions.login();
 					}}
 				>
 					<Text

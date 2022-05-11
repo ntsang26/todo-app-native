@@ -8,6 +8,7 @@ export const COLOR = {
 export const styles = StyleSheet.create({
 	parentContainer: {
 		flex: 1,
+		backgroundColor: "white",
 	},
 	headerContainer: {
 		height: 180,
@@ -57,15 +58,21 @@ export const styles = StyleSheet.create({
 		fontWeight: "bold",
 		fontSize: 16,
 	},
+	taskContainer: {
+		width: "100%",
+		flexDirection: "row",
+		alignItems: "center",
+		marginVertical: 10,
+	},
 	taskItem: {
 		height: 50,
 		width: "100%",
-		marginTop: 15,
 		flexDirection: "row",
 		alignItems: "center",
 		paddingHorizontal: 10,
 		borderWidth: 0.75,
 		borderRadius: 10,
+		backgroundColor: "white",
 	},
 	taskName: {
 		marginLeft: 20,
@@ -74,10 +81,12 @@ export const styles = StyleSheet.create({
 		color: COLOR.mainColor,
 	},
 	deleteBtn: {
+		height: 50,
+		width: 50,
 		position: "absolute",
-		top: "50%",
-		right: 10,
-		transform: [{ translateY: -10 }],
+		right: "3%",
+		alignItems: "center",
+		justifyContent: "center",
 	},
 	deleteBtnIcon: {
 		width: 20,
@@ -130,15 +139,15 @@ export const styles = StyleSheet.create({
 		width: 200,
 		paddingHorizontal: 20,
 		borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
-    borderColor: "#27ae60"
+		borderBottomLeftRadius: 15,
+		borderColor: "#27ae60",
 	},
-  doneBtn: {
-    marginLeft: 0,
-    backgroundColor: "#27ae60",
-    paddingHorizontal: 25,
-    paddingVertical: 6.7,
-    borderTopRightRadius: 15,
-    borderBottomRightRadius: 15,
-  }
+	doneBtn: {
+		marginLeft: 0,
+		backgroundColor: "#27ae60",
+		paddingHorizontal: 25,
+		paddingVertical: 6.7,
+		borderTopRightRadius: 15,
+		borderBottomRightRadius: 15,
+	},
 });

@@ -11,6 +11,7 @@ import {
 	Alert,
 } from "react-native";
 import React from "react";
+import { Actions } from "react-native-router-flux";
 
 export default function SignUp({ navigation }) {
 	const image = {
@@ -67,7 +68,7 @@ export default function SignUp({ navigation }) {
 				<TouchableOpacity
 					style={styles.loginBtn}
 					onPress={() => {
-						navigation.navigate("Login");
+						Actions.login();
 						Alert.alert(
 							"Thành công!",
 							"Bạn đã đăng ký thành công. Vui lòng đăng nhập để tiếp tục!",

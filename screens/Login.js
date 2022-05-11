@@ -10,6 +10,7 @@ import {
 	useWindowDimensions,
 } from "react-native";
 import React from "react";
+import { Actions } from "react-native-router-flux";
 
 export default function Login({ navigation }) {
 	const image = {
@@ -56,12 +57,12 @@ export default function Login({ navigation }) {
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={styles.loginBtn}
-					onPress={() => navigation.navigate("Main")}
+					onPress={() => Actions.main()}
 				>
 					<Text style={styles.loginBtnText}>Login</Text>
 				</TouchableOpacity>
 				<View style={styles.socialLogin}>
-					<TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+					<TouchableOpacity onPress={() => Actions.signUp()}>
 						<Text style={styles.signUpText}>Sign Up</Text>
 					</TouchableOpacity>
 				</View>
